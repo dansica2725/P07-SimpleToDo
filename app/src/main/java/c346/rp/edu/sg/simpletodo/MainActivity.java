@@ -3,6 +3,8 @@ package c346.rp.edu.sg.simpletodo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,16 +15,19 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
     ListView inputLv;
-    Button add, clear, delete;
+    Button add, clear, delete, sort;
     Spinner spinner;
     EditText inputEt;
 
     ArrayList<String> spinnerArray = new ArrayList<>();
     ArrayList<String> inputArray = new ArrayList<>();
+
+    ArrayAdapter inputAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +40,16 @@ public class MainActivity extends AppCompatActivity {
         clear = findViewById(R.id.clearBtn);
         spinner = findViewById(R.id.spinner);
         inputEt = findViewById(R.id.inputEt);
+        sort = findViewById(R.id.sortBtn);
+
+
 
         addSpinnerItem();
 
         final ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         spinner. setAdapter(adapter);
 
-        final ArrayAdapter inputAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, inputArray);
+        inputAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, inputArray);
         inputLv.setAdapter(inputAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -59,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         add.setEnabled(false);
                         delete.setEnabled(true);
                         inputEt.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        registerForContextMenu(inputLv);
                         break;
                 }
             }
@@ -115,10 +124,39 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.sort(inputArray);
+                inputAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public void addSpinnerItem() {
         spinnerArray.add("Add a new task");
         spinnerArray.add("Remove a  task");
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getMenuInflater().inflate(R.menu.context_menu, menu);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.delCM:
+                inputArray.remove(info.position);
+                inputAdapter.notifyDataSetChanged();
+        }
+        return super.onContextItemSelected(item);
     }
 }

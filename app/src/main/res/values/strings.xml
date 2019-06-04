@@ -3,4 +3,6 @@
     <string name="add">ADD</string>
     <string name="clear">CLEAR</string>
     <string name="delete">DELETE</string>
+    <string name="delete_cm">Delete</string>
+    <string name="sort">SORT</string>
 </resources>
