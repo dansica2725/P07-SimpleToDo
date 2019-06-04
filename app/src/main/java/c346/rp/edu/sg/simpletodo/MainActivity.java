@@ -103,13 +103,15 @@ public class MainActivity extends AppCompatActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (inputArray.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "You don't have any task to remove", Toast.LENGTH_SHORT).show();
+                }
+
                 if (inputEt.getText() != null || inputArray.size() > 0) {
                     inputEt.setText("");
                     inputArray.clear();
                     inputAdapter.notifyDataSetChanged();
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "Wrong Index Number", Toast.LENGTH_SHORT).show();
                 }
             }
         });
